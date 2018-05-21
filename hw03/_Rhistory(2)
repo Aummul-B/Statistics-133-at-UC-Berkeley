@@ -1,0 +1,5 @@
+knitr::opts_chunk$set(echo = TRUE, error = TRUE, fig.path = "images/")
+url <- https://raw.githubusercontent.com/ucb-stat133/stat133-spring-2018/master/data/nba2017-roster.csv
+url <- 'https://raw.githubusercontent.com/ucb-stat133/stat133-spring-2018/master/data/nba2017-roster.csv'
+download.file(url = url, destfile = 'nba2017-roster.csv')
+read.csv("nba2017-roster.csv")

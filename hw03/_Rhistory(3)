@@ -1,0 +1,29 @@
+knitr::opts_chunk$set(echo = TRUE, error = TRUE, fig.path = "images/")
+roster <- read.csv("nba2017-roster.csv")
+roster[roster[[2]] == "LAL", ]
+source("code/binomial-functions.R", local = F)
+source("code/binomial-functions.R", local = F)
+bin_probability(trials = 10, success = 3, prob = (1/6))
+bin_distribution(trials = 10, prob = 0.25)
+plot(dist_six)
+dist_six <- bin_distribution(trials = 10, prob = 0.25)
+plot(dist_six)
+source("code/binomial-functions.R", local = F)
+bin_probability(trials = 10, success = 3, prob = (1/6))
+dist_six <- bin_distribution(trials = 10, prob = 0.25)
+plot(dist_six, xlab = "number of sixes in 10 trials", ylab = "probability", main = "Distribution of probability of no of six in 10 trials")
+dist_six <- bin_distribution(trials = 10, prob = 0.25)
+plot(dist_six, xlab = "number of sixes in 10 trials", ylab = "probability", main = "Distribution of probability of no of six in 10 trials")
+source("code/binomial-functions.R", local = F)
+bin_probability(trials = 10, success = 3, prob = (1/6))
+prob_more_than_three <- bin_probability(trials = 5, success = i, prob = 0.35)
+#Getting more than 3 heads in 5 tosses, p = 0.35
+prob_more_than_three <- 0
+#Getting more than 3 heads in 5 tosses, p = 0.35
+prob_more_than_three <- 0
+for (i in 4:5) {
+prob_more_than_three <- prob_more_than_three + bin_probability(trials = 5, success = i, prob = 0.35)
+}
+prob_more_than_three
+dist_heads <- bin_distribution(trials = 15, prob = 0.35)
+plot(dist_heads, xlab = "number of heads in 15 trials", ylab = "probability", main = "Distribution of probability of no of heads in 15 trials")

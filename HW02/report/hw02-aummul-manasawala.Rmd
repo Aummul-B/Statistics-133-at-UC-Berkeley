@@ -1,0 +1,246 @@
+---
+title: "hw02-aummul_manasawala"
+output: github_document
+---
+### Loading Packages
+```{r results='hide', warning=FALSE, message=FALSE}
+library(knitr)
+library(dplyr)
+library(ggplot2)
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,fig.path = "../images/")
+shots_data <- read.csv("../data/shots-data.csv")
+```
+#5 Summary Tables
+
+## 5.1) Total Shots by Player
+```{r}
+total_shots_by_players <- shots_data %>% 
+  select(name, shot_made_flag) %>%
+  group_by(name) %>%
+  summarise(total = sum(shot_made_flag=="made shot"))
+
+total_shots_by_players
+```
+
+## 5.2) Effective Shooting Percentage
+```{r}
+effective_shooting_perc <- shots_data %>%
+  select(name, shot_made_flag) %>%
+  group_by(name) %>%
+  summarise(total_shots_attempted = sum(shot_made_flag == "made shot" | shot_made_flag=="missed shot")) %>%
+  mutate(total_shots_made = total_shots_by_players$total) %>%
+  mutate(perc_made = total_shots_made/total_shots_attempted)
+
+effective_shooting_perc
+```
+
+
+```{r}
+total_2_pts_shots_made <- shots_data %>%
+  select(name, shot_type, shot_made_flag) %>%
+  filter(shot_type == "2PT Field Goal")%>%
+  filter(shot_made_flag == "made shot") %>%
+  group_by(name) %>%
+  summarise(total_shots_made = sum(shot_made_flag == "made shot"))
+  
+
+two_pt_effective_shooting_perc <- 
+  shots_data %>%
+  select(name, shot_made_flag, shot_type) %>%
+  filter(shot_type == "2PT Field Goal") %>%
+  group_by(name) %>%
+  summarise(total_2pt_shots_attempted = sum(shot_made_flag == "made shot" | shot_made_flag=="missed shot")) %>%
+  mutate(two_pts_made = total_2_pts_shots_made$total_shots_made) %>%
+  mutate(perc_made = two_pts_made/total_2pt_shots_attempted)
+
+two_pt_effective_shooting_perc
+```
+ 
+  
+
+```{r}
+total_3_pts_shots_made <- shots_data %>%
+  select(name, shot_type, shot_made_flag) %>%
+  filter(shot_type == "3PT Field Goal")%>%
+  filter(shot_made_flag == "made shot") %>%
+  group_by(name) %>%
+  summarise(total_shots_made_three = sum(shot_made_flag == "made shot"))
+  
+
+three_pt_effective_shooting_perc <- 
+  shots_data %>%
+  select(name, shot_made_flag, shot_type) %>%
+  filter(shot_type == "3PT Field Goal") %>%
+  group_by(name) %>%
+  summarise(total_3pt_shots_attempted = sum(shot_made_flag == "made shot" | shot_made_flag=="missed shot")) %>%
+  mutate(three_pts_made = total_3_pts_shots_made$total_shots_made_three) %>%
+  mutate(perc_made = three_pts_made/total_3pt_shots_attempted)
+
+three_pt_effective_shooting_perc
+```
+#6. Shooting Distance
+
+## 6.1) dplyr table
+
+```{r}
+
+shots_attempted_by_dist <- shots_data %>%
+  select(shot_distance, shot_made_flag) %>%
+  group_by(shot_distance) %>%
+  summarise(by_dist_total_shots_attempt = sum(shot_made_flag != "null"))
+
+shots_made_by_dist <- shots_data %>%
+  select(shot_distance, shot_made_flag) %>%
+  group_by(shot_distance)%>%
+  summarise(by_dist_total_shots_made = sum(shot_made_flag == "made shot"))
+
+distance_vs_prop <- shots_data %>%
+  select(shot_distance, x) %>%
+  group_by(shot_distance) %>%
+  summarise(dummy_col <- sum(x)) %>%
+  mutate(made_shot_prop = shots_made_by_dist$by_dist_total_shots_made/shots_attempted_by_dist$by_dist_total_shots_attempt) %>%
+  select(shot_distance, made_shot_prop)
+
+distance_vs_prop
+```
+
+
+## 6.2) ggplot
+
+```{r proportions of shot vs distance}
+ggplot(data = distance_vs_prop, aes(x = shot_distance, y = made_shot_prop) ) +
+  geom_point() +
+  labs(x = "Distance of the shot", y = "Proportion of shots made") +
+  theme_bw()
+```
+
+##### What do you observe?
+
+We see that as the distace increases from 0 to 5, there is a sharp decline in the proportion of shots made from around 0.84 to as low as 0.29. After distace 5 thereis a lot of noise in the data but if we see beyond the turbulence there is decrease in proportions of shot made with the increasing distance but the  slope is ver lesscompared to the slope observed when distace increased from 0 to 5.
+
+
+##### Can you confirm that shorter the distance, more efective the shots?
+
+Yes, we can safely generalise that shorter the distance, more effective the shots if e ignore the outliers and the noise.
+
+
+
+#####Can you guesstimate a distance threshhold beyond which the chance of making a successful shot is basically null?
+
+The guess I would make looking at the data is that approximately 34-35 is the distance thresh hold beyond which the chance of making a successful shot is basically null.
+
+##### What distances tend to have percentage 50% or more?
+
+Distaces 0 to 2 have percentage greaer than 50%.
+
+
+# 7. Total number of shots by minute of occurence
+
+Curry's plot
+```{r Stephen Curry shots vs time}
+curry_shots_by_minute <- shots_data %>%
+  select(minute, name) %>%
+  filter(name== "Stephen Curry") %>%
+  arrange(minute) %>%
+  group_by(minute) %>%
+  summarise(curry_shots = sum(name == "Stephen Curry") ) %>%
+  mutate(name = "Stephen Curry")
+
+
+
+
+ggplot(data = curry_shots_by_minute, aes(x = minute, y = curry_shots)) +
+  geom_point(color = "steelblue2")+
+  theme_minimal()+
+  labs(y = "total number of shots")+
+  geom_path(color = "steelblue1")+
+  annotate("rect", xmin=c(0, 24), xmax=c(12, 36), ymin=0,  ymax=Inf, fill="grey 70", alpha=0.2)+
+  geom_vline(xintercept = 48, size = 0.2)+
+  scale_x_continuous(breaks = seq(from = 0, to = 48, by = 12))+
+  ggtitle("Stephen Curry")
+  
+
+```
+Dataframe for al plot:
+
+```{r}
+curry_shots_by_minute <- shots_data %>%
+  select(minute, name) %>%
+  filter(name== "Stephen Curry") %>%
+  arrange(minute) %>%
+  group_by(minute) %>%
+  summarise(shots = sum(name == "Stephen Curry") ) %>%
+  mutate(name = "Stephen Curry")
+
+
+green_shots_by_minute <- shots_data %>%
+  select(minute, name) %>%
+  filter(name == "Graymond Green") %>%
+  arrange(minute) %>%
+  group_by(minute) %>%
+  summarise(shots = sum(name == "Graymond Green") ) %>%
+  mutate(name= "Graymond Green")
+
+
+thompson_shots_by_minute <- shots_data %>%
+  select(minute, name) %>%
+  filter(name== "Klay Thompson") %>%
+  arrange(minute) %>%
+  group_by(minute) %>%
+  summarise(shots = sum(name == "Klay Thompson") ) %>%
+  mutate(name = "Klay Thompson")
+
+durant_shots_by_minute <- shots_data %>%
+  select(minute, name) %>%
+  filter(name== "Kevin Durant") %>%
+  arrange(minute) %>%
+  group_by(minute) %>%
+  summarise(shots = sum(name == "Kevin Durant") ) %>%
+  mutate(name = "Kevin Durant")
+
+iguodala_dummy <- shots_data %>%
+  select(minute, name) %>%
+  filter(name== "Andre Iguodala") %>%
+  arrange(minute) %>%
+  group_by(minute) %>%
+  summarise(shots1 = sum(name == "Andre Iguodala") ) 
+
+
+shots <- c(rep(0, 48))
+for (i in 1:48){
+  filter_dummy <- filter(iguodala_dummy, minute==i)
+     if (nrow(filter_dummy)!=0) {shots[i]=filter_dummy$shots1} else {shots[i]=0}
+}
+name = c(rep("Andre Iguodala", 48))
+igudala_shots_by_minute <- data.frame(minute = c(1:48), shots, name)
+
+
+
+all <- rbind( igudala_shots_by_minute, green_shots_by_minute, durant_shots_by_minute, thompson_shots_by_minute, curry_shots_by_minute)
+
+
+
+
+```
+
+Plot for all the five players:
+
+```{r all players shot vs time}
+ggplot(data = all, aes(x = minute, y = shots)) +
+  geom_point(color = "steelblue2")+
+  theme_minimal()+
+  labs(y = "total number of shots")+
+  geom_path(color = "steelblue1")+
+  annotate("rect", xmin=c(0, 24), xmax=c(12, 36), ymin=0,  ymax=Inf, fill="grey 70", alpha=0.2)+
+  geom_vline(xintercept = 48, size = 0.2)+
+  scale_x_continuous(limits = c(1, 48), breaks = c(1, 12, 24, 36, 48))+
+  ggtitle("Total number of shots(by minute occurence")+
+  facet_wrap(~name)
+```
+
+
+
+

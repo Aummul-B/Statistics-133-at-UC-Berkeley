@@ -1,0 +1,179 @@
+---
+title: "hw04-aummul-manasawala"
+author: "Aummul"
+date: "4/8/2018"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.path = "../images/")
+```
+
+```{r}
+library(knitr)
+library(stringr)
+library(XML)
+library(ggplot2)
+library(readr)
+```
+
+#1) Archive of an R ackage
+##1.1 and 1.2 Reading Table, Data Cleaning and Exporting
+
+```{r}
+source("../code/archive-functions.R")
+raw_data <- read_archive("stringr")
+clean_data <- clean_archive(raw_data)
+clean_data
+write.csv(clean_data, file = '../data/stringr-archive.csv')
+```
+
+##1.3 Timeline plot
+```{r plot of stringr timeline}
+plot_archive(clean_data)
+```
+
+##1.5 Archives of "dplyr", "ggplot", "XML", "knitr"
+
+```{r}
+#exporting table and saving the data locally
+raw_data <- read_archive("dplyr")
+clean_data <- clean_archive(raw_data)
+#write.csv(clean_data, file = '../data/dplyr-archive.csv')
+```
+
+
+```{r}
+dfggplot2 <- read.csv('../data/ggplot2-archive.csv')
+dfdplyr <- read.csv('../data/dplyr-archive.csv')
+dfknitr <- read.csv('../data/knitr-archive.csv')
+dfXML <- read.csv('../data/XML-archive.csv')
+mega_archives <- rbind(dfdplyr, dfggplot2, dfknitr, dfXML)
+mega_archives$date <- as.Date(mega_archives$date)
+```
+
+
+```{r facet_wrapped package size timeline}
+
+ggplot(data = mega_archives, aes(x = date, y = size))+
+  geom_step(aes(color = name), lwd = 1)+
+  facet_wrap(~name, shrink = T, scales = "free")+
+  labs(y = "Size(Kilobytes)", title = "All packages: timeline of version sizes")
+```
+ 
+ 
+```{r package size timeline}
+ggplot(data = mega_archives, mapping = aes(x = date, y = size))+
+    geom_step(aes(col = name), lwd = 1)+
+    labs(y = "Size(Kilobytes)", title = "All packages: timeline of version sizes")
+
+```
+
+#2) Testing functions of regex-functions.R
+```{r}
+source("../code/regex-functions.R")
+split_chars("Go Bears!")
+split_chars("Expecto Partunam")
+num_vowels("Go Bears!")
+count_vowels("THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG")
+reverse_chars("gattaca")
+reverse_chars("Lumox Maxima")
+reverse_words("sentence! this reverse")
+reverse_words("string")
+
+```
+
+#3) Data "Emoticon in Text"
+```{r}
+text_emoticon <- read.csv("../data/text-emoticon.csv", header = T, sep = ",", stringsAsFactors = FALSE)
+tweet_content <- text_emoticon[[4]]
+```
+
+## 3.1) Number of Chaarcters per Tweet
+
+```{r histogram of number of characters in a tweet}
+count_char_per_tweet <- nchar(tweet_content)
+summary(count_char_per_tweet)
+histogram_tweets_chars <- hist(count_char_per_tweet, breaks = seq(from = 0, to = max(count_char_per_tweet)+5, by = 5), main = "Histogram of No. of characters in a tweet!")
+```
+
+
+## 3.2) Number of Mentions
+
+```{r}
+
+count_mentions <- c()
+for (i in c(1:length(tweet_content))) {
+  x <- str_split(tweet_content[i], pattern = " ")
+  count_mentions[i] <- 0
+  for(j in c(1 : length(x[[1]]))){
+    if(str_sub(x[[1]][j], start = 1, end = 1)  =="@" & nchar(x[[1]][j]) <= 15){
+      if(str_detect(str_sub(x[[1]][j], start = 2, end = nchar(x[[1]][j])), pattern = "\\w{1,15}+")==TRUE){
+        count_mentions[i] <- count_mentions[i] + 1
+      }
+    }
+  }
+}
+```
+
+```{r}
+freq_mentions <- table(count_mentions)
+freq_mentions
+```
+
+```{r barplot mention frequency}
+barplot(freq_mentions, main = "Barplot of the no. of mention's frequency", ylab = "Frequency", xlab = "No of mentions in a tweet")
+```
+
+```{r}
+tweet_content[which(count_mentions==10)]
+```
+
+## 3.3) Hashtags
+
+```{r}
+
+
+count_hashtags <- c()
+for(i in c(1:length(tweet_content))){
+  x <- str_split(tweet_content[i], pattern = " ")
+  count_hashtags[i] <- 0
+  for(j in c(1 : length(x[[1]]))){
+    if((str_sub(x[[1]][j], start = 1, end = 1)=="#" & str_detect(str_sub(x[[1]][j], start = 2, end = 2), pattern = "[0-9]")== FALSE & str_detect(str_sub(x[[1]][j], start = 2, end = nchar(x[[1]][j])), pattern = "[:punct:]")== FALSE)) {
+      if(nchar(x[[1]][j])>1){
+        if(str_detect(str_sub(x[[1]][j], start = 2, end = nchar(x[[1]][j])), pattern = (str_flatten(replicate((nchar(x[[1]][j])-1), "\\d"), collapse = "")))==FALSE){
+        count_hashtags[i] <- count_hashtags[i] + 1
+      }
+      }
+    }
+  }
+}
+```
+
+```{r}
+freq_hashtags <- table(count_hashtags)
+freq_hashtags
+```
+
+```{r barplot hashtags frequency}
+barplot(freq_hashtags, main = "Barplot of the no. of hashtag's frequency", ylab = "Frequency", xlab = "No of hashtags in a tweet")
+```
+
+```{r}
+#Average length of the hashtags
+hashtag_len <- nchar(unlist(str_extract_all(tweet_content, '#[a-zA-Z][a-zA-Z0-9]*')))-1
+avg_len <- mean(hashtag_len)
+avg_len
+
+```
+Average length of the hashtags is 7.625
+```{r}
+#Most common length of the hashtags
+hashtag_mode <- table(hashtag_len)
+
+sort(hashtag_mode, decreasing = T)[1:2]
+
+
+```
+
+The most common length of the hashtags is 9.

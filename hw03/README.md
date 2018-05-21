@@ -1,0 +1,1 @@
+The assignment is giving handle to work with the shell pipelines and redirection commands along with writing functions, it's documentation using Roxygen comments, conditional statements and loops.

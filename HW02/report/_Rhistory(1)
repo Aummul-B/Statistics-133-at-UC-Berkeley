@@ -1,0 +1,512 @@
+mutate(three_pts_made = total_3_pts_shots_made$total_shots_made_three) %>%
+mutate(perc_made = three_pts_made/total_3pt_shots_attempted)
+three_pt_effective_shooting_perc
+shots_attempted_by_dist <- shots_data %>%
+select(shot_distance, shot_made_flag) %>%
+group_by(shot_distance) %>%
+summarise(by_dist_total_shots_attempt = sum(shot_made_flag != "null"))
+shots_made_by_dist <- shots_data %>%
+select(shot_distance, shot_made_flag) %>%
+group_by(shot_distance)%>%
+summarise(by_dist_total_shots_made = sum(shot_made_flag == "made shot"))
+distance_vs_prop <- shots_data %>%
+select(shot_distance, x) %>%
+group_by(shot_distance) %>%
+summarise(dummy_col <- sum(x)) %>%
+mutate(made_shot_prop = shots_made_by_dist$by_dist_total_shots_made/shots_attempted_by_dist$by_dist_total_shots_attempt) %>%
+select(shot_distance, made_shot_prop)
+distance_vs_prop
+ggplot(data = distance_vs_prop, aes(x = shot_distance, y = made_shot_prop) ) +
+geom_point() +
+labs(x = "Distance of the shot", y = "Proportion of shots made") +
+theme_bw()
+curry_shots_by_minute <- shots_data %>%
+select(minute, name) %>%
+filter(name== "Stephen Curry") %>%
+arrange(minute) %>%
+group_by(minute) %>%
+summarise(curry_shots = sum(name == "Stephen Curry") )
+ggplot(data = curry_shots_by_minute, aes(x = minute, y = curry_shots)) +
+geom_point(color = "steelblue2")+
+theme_minimal()+
+labs(y = "total number of shots")+
+geom_path(color = "steelblue1")+
+annotate("rect", xmin=c(0, 24), xmax=c(12, 36), ymin=0,  ymax=Inf, fill="grey 70", alpha=0.2)+
+geom_vline(xintercept = 48, size = 0.2)+
+scale_x_continuous(breaks = seq(from = 0, to = 48, by = 12))+
+ggtitle("Stephen Curry")
+curry_shots_by_minute <- shots_data %>%
+select(minute, name) %>%
+filter(name== "Stephen Curry") %>%
+arrange(minute) %>%
+group_by(minute) %>%
+summarise(curry_shots = sum(name == "Stephen Curry") )
+green_shots_by_minute <- shots_data %>%
+select(minute, name) %>%
+filter(name == "Graymond Green") %>%
+arrange(minute) %>%
+group_by(minute) %>%
+summarise(green_shots = sum(name == "Graymond Green") )
+thompson_shots_by_minute <- shots_data %>%
+select(minute, name) %>%
+filter(name== "Klay Thompson") %>%
+arrange(minute) %>%
+group_by(minute) %>%
+summarise(thompson_shots = sum(name == "Klay Thompson") )
+durant_shots_by_minute <- shots_data %>%
+select(minute, name) %>%
+filter(name== "Kevin Durant") %>%
+arrange(minute) %>%
+group_by(minute) %>%
+summarise(durant_shots = sum(name == "Kevin Durant") )
+iguodala_dummy <- shots_data %>%
+select(minute, name) %>%
+filter(name== "Andre Iguodala") %>%
+arrange(minute) %>%
+group_by(minute) %>%
+summarise(iguodala_shots1 = sum(name == "Andre Iguodala") )
+iguodala_shots <- c(rep(0, 48))
+for (i in 1:48){
+filter_dummy <- filter(iguodala_dummy, minute==i)
+if (nrow(filter_dummy)!=0) {iguodala_shots[i]=filter_dummy$iguodala_shots1} else {iguodala_shots[i]=0}
+}
+igudala_shots_by_minute <- data.frame(minutes = c(1:48), iguodala_shots)
+new_shots_data <- cbind(curry_shots_by_minute, green_shots_by_minute, thompson_shots_by_minute, durant_shots_by_minute, igudala_shots_by_minute)
+new_shots_data <- new_shots_data[ ,c(1, 2, 4, 6, 8, 10)]
+ggplot(data = new_shots_data, aes(x = minute, y = curry_shots)) +
+geom_point(color = "steelblue2")+
+theme_minimal()+
+labs(y = "total number of shots")+
+geom_path(color = "steelblue1")+
+annotate("rect", xmin=c(0, 24), xmax=c(12, 36), ymin=0,  ymax=Inf, fill="grey 70", alpha=0.2)+
+geom_vline(xintercept = 48, size = 0.2)+
+scale_x_continuous(breaks = seq(from = 0, to = 48, by = 12))+
+ggtitle("Stephen Curry")
+View(new_shots_data)
+View(shots_data)
+View(curry_shots_by_minute)
+curry_shots_by_minute <- shots_data %>%
+select(minute, name) %>%
+filter(name== "Stephen Curry") %>%
+arrange(minute) %>%
+group_by(minute) %>%
+summarise(curry_shots = sum(name == "Stephen Curry") ) %>%
+mutate(name = "Stephen Curry")
+ggplot(data = curry_shots_by_minute, aes(x = minute, y = curry_shots)) +
+geom_point(color = "steelblue2")+
+theme_minimal()+
+labs(y = "total number of shots")+
+geom_path(color = "steelblue1")+
+annotate("rect", xmin=c(0, 24), xmax=c(12, 36), ymin=0,  ymax=Inf, fill="grey 70", alpha=0.2)+
+geom_vline(xintercept = 48, size = 0.2)+
+scale_x_continuous(breaks = seq(from = 0, to = 48, by = 12))+
+ggtitle("Stephen Curry")
+View(curry_shots_by_minute)
+curry_shots_by_minute <- shots_data %>%
+select(minute, name) %>%
+filter(name== "Stephen Curry") %>%
+arrange(minute) %>%
+group_by(minute) %>%
+summarise(curry_shots = sum(name == "Stephen Curry") ) %>%
+mutate(name = "Stephen Curry")
+green_shots_by_minute <- shots_data %>%
+select(minute, name) %>%
+filter(name == "Graymond Green") %>%
+arrange(minute) %>%
+group_by(minute) %>%
+summarise(green_shots = sum(name == "Graymond Green") ) %>%
+mutate(name= "Graymond Green")
+thompson_shots_by_minute <- shots_data %>%
+select(minute, name) %>%
+filter(name== "Klay Thompson") %>%
+arrange(minute) %>%
+group_by(minute) %>%
+summarise(thompson_shots = sum(name == "Klay Thompson") ) %>%
+mutate(name = "Klay Thompson")
+durant_shots_by_minute <- shots_data %>%
+select(minute, name) %>%
+filter(name== "Kevin Durant") %>%
+arrange(minute) %>%
+group_by(minute) %>%
+summarise(durant_shots = sum(name == "Kevin Durant") ) %>%
+mutate(name = "Kevin Durant")
+iguodala_dummy <- shots_data %>%
+select(minute, name) %>%
+filter(name== "Andre Iguodala") %>%
+arrange(minute) %>%
+group_by(minute) %>%
+summarise(iguodala_shots1 = sum(name == "Andre Iguodala") )
+iguodala_shots <- c(rep(0, 48))
+for (i in 1:48){
+filter_dummy <- filter(iguodala_dummy, minute==i)
+if (nrow(filter_dummy)!=0) {iguodala_shots[i]=filter_dummy$iguodala_shots1} else {iguodala_shots[i]=0}
+}
+igudala_shots_by_minute <- data.frame(minutes = c(1:48), iguodala_shots)
+igudala_shots_by_minute <- iguodala_shots_by_minute %>%
+mutate(name = "Andre Iguodala")
+curry_shots_by_minute <- shots_data %>%
+select(minute, name) %>%
+filter(name== "Stephen Curry") %>%
+arrange(minute) %>%
+group_by(minute) %>%
+summarise(curry_shots = sum(name == "Stephen Curry") ) %>%
+mutate(name = "Stephen Curry")
+green_shots_by_minute <- shots_data %>%
+select(minute, name) %>%
+filter(name == "Graymond Green") %>%
+arrange(minute) %>%
+group_by(minute) %>%
+summarise(green_shots = sum(name == "Graymond Green") ) %>%
+mutate(name= "Graymond Green")
+thompson_shots_by_minute <- shots_data %>%
+select(minute, name) %>%
+filter(name== "Klay Thompson") %>%
+arrange(minute) %>%
+group_by(minute) %>%
+summarise(thompson_shots = sum(name == "Klay Thompson") ) %>%
+mutate(name = "Klay Thompson")
+durant_shots_by_minute <- shots_data %>%
+select(minute, name) %>%
+filter(name== "Kevin Durant") %>%
+arrange(minute) %>%
+group_by(minute) %>%
+summarise(durant_shots = sum(name == "Kevin Durant") ) %>%
+mutate(name = "Kevin Durant")
+iguodala_dummy <- shots_data %>%
+select(minute, name) %>%
+filter(name== "Andre Iguodala") %>%
+arrange(minute) %>%
+group_by(minute) %>%
+summarise(iguodala_shots1 = sum(name == "Andre Iguodala") )
+iguodala_shots <- c(rep(0, 48))
+for (i in 1:48){
+filter_dummy <- filter(iguodala_dummy, minute==i)
+if (nrow(filter_dummy)!=0) {iguodala_shots[i]=filter_dummy$iguodala_shots1} else {iguodala_shots[i]=0}
+}
+igudala_shots_by_minute <- data.frame(minutes = c(1:48), iguodala_shots)
+igudala_shots_by_minute <- igudala_shots_by_minute %>%
+mutate(name = "Andre Iguodala")
+View(igudala_shots_by_minute)
+View(igudala_shots_by_minute)
+curry_shots_by_minute <- shots_data %>%
+select(minute, name) %>%
+filter(name== "Stephen Curry") %>%
+arrange(minute) %>%
+group_by(minute) %>%
+summarise(curry_shots = sum(name == "Stephen Curry") ) %>%
+mutate(name = "Stephen Curry")
+green_shots_by_minute <- shots_data %>%
+select(minute, name) %>%
+filter(name == "Graymond Green") %>%
+arrange(minute) %>%
+group_by(minute) %>%
+summarise(green_shots = sum(name == "Graymond Green") ) %>%
+mutate(name= "Graymond Green")
+thompson_shots_by_minute <- shots_data %>%
+select(minute, name) %>%
+filter(name== "Klay Thompson") %>%
+arrange(minute) %>%
+group_by(minute) %>%
+summarise(thompson_shots = sum(name == "Klay Thompson") ) %>%
+mutate(name = "Klay Thompson")
+durant_shots_by_minute <- shots_data %>%
+select(minute, name) %>%
+filter(name== "Kevin Durant") %>%
+arrange(minute) %>%
+group_by(minute) %>%
+summarise(durant_shots = sum(name == "Kevin Durant") ) %>%
+mutate(name = "Kevin Durant")
+iguodala_dummy <- shots_data %>%
+select(minute, name) %>%
+filter(name== "Andre Iguodala") %>%
+arrange(minute) %>%
+group_by(minute) %>%
+summarise(iguodala_shots1 = sum(name == "Andre Iguodala") )
+iguodala_shots <- c(rep(0, 48))
+for (i in 1:48){
+filter_dummy <- filter(iguodala_dummy, minute==i)
+if (nrow(filter_dummy)!=0) {iguodala_shots[i]=filter_dummy$iguodala_shots1} else {iguodala_shots[i]=0}
+}
+igudala_shots_by_minute <- data.frame(minutes = c(1:48), iguodala_shots)
+igudala_shots_by_minute <- igudala_shots_by_minute %>%
+mutate(name = "Andre Iguodala")
+all <- rbind(igudala_shots_by_minute, green_shots_by_minute, durant_shots_by_minute, thompson_shots_by_minute, curry_shots_by_minute)
+View(curry_shots_by_minute)
+View(green_shots_by_minute)
+curry_shots_by_minute <- shots_data %>%
+select(minute, name) %>%
+filter(name== "Stephen Curry") %>%
+arrange(minute) %>%
+group_by(minute) %>%
+summarise(shots = sum(name == "Stephen Curry") ) %>%
+mutate(name = "Stephen Curry")
+green_shots_by_minute <- shots_data %>%
+select(minute, name) %>%
+filter(name == "Graymond Green") %>%
+arrange(minute) %>%
+group_by(minute) %>%
+summarise(shots = sum(name == "Graymond Green") ) %>%
+mutate(name= "Graymond Green")
+thompson_shots_by_minute <- shots_data %>%
+select(minute, name) %>%
+filter(name== "Klay Thompson") %>%
+arrange(minute) %>%
+group_by(minute) %>%
+summarise(shots = sum(name == "Klay Thompson") ) %>%
+mutate(name = "Klay Thompson")
+durant_shots_by_minute <- shots_data %>%
+select(minute, name) %>%
+filter(name== "Kevin Durant") %>%
+arrange(minute) %>%
+group_by(minute) %>%
+summarise(shots = sum(name == "Kevin Durant") ) %>%
+mutate(name = "Kevin Durant")
+iguodala_dummy <- shots_data %>%
+select(minute, name) %>%
+filter(name== "Andre Iguodala") %>%
+arrange(minute) %>%
+group_by(minute) %>%
+summarise(shots1 = sum(name == "Andre Iguodala") )
+shots <- c(rep(0, 48))
+for (i in 1:48){
+filter_dummy <- filter(iguodala_dummy, minute==i)
+if (nrow(filter_dummy)!=0) {shots[i]=filter_dummy$shots1} else {shots[i]=0}
+}
+igudala_shots_by_minute <- data.frame(minutes = c(1:48), shots)
+igudala_shots_by_minute <- igudala_shots_by_minute %>%
+mutate(name = "Andre Iguodala")
+all <- rbind(igudala_shots_by_minute, green_shots_by_minute, durant_shots_by_minute, thompson_shots_by_minute, curry_shots_by_minute)
+all <- rbind( green_shots_by_minute, durant_shots_by_minute, thompson_shots_by_minute, curry_shots_by_minute)
+View(all)
+curry_shots_by_minute <- shots_data %>%
+select(minute, name) %>%
+filter(name== "Stephen Curry") %>%
+arrange(minute) %>%
+group_by(minute) %>%
+summarise(shots = sum(name == "Stephen Curry") ) %>%
+mutate(name = "Stephen Curry")
+green_shots_by_minute <- shots_data %>%
+select(minute, name) %>%
+filter(name == "Graymond Green") %>%
+arrange(minute) %>%
+group_by(minute) %>%
+summarise(shots = sum(name == "Graymond Green") ) %>%
+mutate(name= "Graymond Green")
+thompson_shots_by_minute <- shots_data %>%
+select(minute, name) %>%
+filter(name== "Klay Thompson") %>%
+arrange(minute) %>%
+group_by(minute) %>%
+summarise(shots = sum(name == "Klay Thompson") ) %>%
+mutate(name = "Klay Thompson")
+durant_shots_by_minute <- shots_data %>%
+select(minute, name) %>%
+filter(name== "Kevin Durant") %>%
+arrange(minute) %>%
+group_by(minute) %>%
+summarise(shots = sum(name == "Kevin Durant") ) %>%
+mutate(name = "Kevin Durant")
+iguodala_dummy <- shots_data %>%
+select(minute, name) %>%
+filter(name== "Andre Iguodala") %>%
+arrange(minute) %>%
+group_by(minute) %>%
+summarise(shots1 = sum(name == "Andre Iguodala") )
+shots <- c(rep(0, 48))
+for (i in 1:48){
+filter_dummy <- filter(iguodala_dummy, minute==i)
+if (nrow(filter_dummy)!=0) {shots[i]=filter_dummy$shots1} else {shots[i]=0}
+}
+name = c(rep("Andre Iguodala", 48))
+igudala_shots_by_minute <- data.frame(minutes = c(1:48), shots, name)
+igudala_shots_by_minute <- igudala_shots_by_minute
+all <- rbind( green_shots_by_minute, durant_shots_by_minute, thompson_shots_by_minute, curry_shots_by_minute)
+View(all)
+curry_shots_by_minute <- shots_data %>%
+select(minute, name) %>%
+filter(name== "Stephen Curry") %>%
+arrange(minute) %>%
+group_by(minute) %>%
+summarise(shots = sum(name == "Stephen Curry") ) %>%
+mutate(name = "Stephen Curry")
+green_shots_by_minute <- shots_data %>%
+select(minute, name) %>%
+filter(name == "Graymond Green") %>%
+arrange(minute) %>%
+group_by(minute) %>%
+summarise(shots = sum(name == "Graymond Green") ) %>%
+mutate(name= "Graymond Green")
+thompson_shots_by_minute <- shots_data %>%
+select(minute, name) %>%
+filter(name== "Klay Thompson") %>%
+arrange(minute) %>%
+group_by(minute) %>%
+summarise(shots = sum(name == "Klay Thompson") ) %>%
+mutate(name = "Klay Thompson")
+durant_shots_by_minute <- shots_data %>%
+select(minute, name) %>%
+filter(name== "Kevin Durant") %>%
+arrange(minute) %>%
+group_by(minute) %>%
+summarise(shots = sum(name == "Kevin Durant") ) %>%
+mutate(name = "Kevin Durant")
+iguodala_dummy <- shots_data %>%
+select(minute, name) %>%
+filter(name== "Andre Iguodala") %>%
+arrange(minute) %>%
+group_by(minute) %>%
+summarise(shots1 = sum(name == "Andre Iguodala") )
+shots <- c(rep(0, 48))
+for (i in 1:48){
+filter_dummy <- filter(iguodala_dummy, minute==i)
+if (nrow(filter_dummy)!=0) {shots[i]=filter_dummy$shots1} else {shots[i]=0}
+}
+name = c(rep("Andre Iguodala", 48))
+igudala_shots_by_minute <- data.frame(minutes = c(1:48), shots, name)
+all <- rbind( igudala_shots_by_minute, green_shots_by_minute, durant_shots_by_minute, thompson_shots_by_minute, curry_shots_by_minute)
+curry_shots_by_minute <- shots_data %>%
+select(minute, name) %>%
+filter(name== "Stephen Curry") %>%
+arrange(minute) %>%
+group_by(minute) %>%
+summarise(shots = sum(name == "Stephen Curry") ) %>%
+mutate(name = "Stephen Curry")
+green_shots_by_minute <- shots_data %>%
+select(minute, name) %>%
+filter(name == "Graymond Green") %>%
+arrange(minute) %>%
+group_by(minute) %>%
+summarise(shots = sum(name == "Graymond Green") ) %>%
+mutate(name= "Graymond Green")
+thompson_shots_by_minute <- shots_data %>%
+select(minute, name) %>%
+filter(name== "Klay Thompson") %>%
+arrange(minute) %>%
+group_by(minute) %>%
+summarise(shots = sum(name == "Klay Thompson") ) %>%
+mutate(name = "Klay Thompson")
+durant_shots_by_minute <- shots_data %>%
+select(minute, name) %>%
+filter(name== "Kevin Durant") %>%
+arrange(minute) %>%
+group_by(minute) %>%
+summarise(shots = sum(name == "Kevin Durant") ) %>%
+mutate(name = "Kevin Durant")
+iguodala_dummy <- shots_data %>%
+select(minute, name) %>%
+filter(name== "Andre Iguodala") %>%
+arrange(minute) %>%
+group_by(minute) %>%
+summarise(shots1 = sum(name == "Andre Iguodala") )
+shots <- c(rep(0, 48))
+for (i in 1:48){
+filter_dummy <- filter(iguodala_dummy, minute==i)
+if (nrow(filter_dummy)!=0) {shots[i]=filter_dummy$shots1} else {shots[i]=0}
+}
+name = c(rep("Andre Iguodala", 48))
+igudala_shots_by_minute <- data.frame(minute = c(1:48), shots, name)
+all <- rbind( igudala_shots_by_minute, green_shots_by_minute, durant_shots_by_minute, thompson_shots_by_minute, curry_shots_by_minute)
+View(all)
+View(all)
+ggplot(data = all, aes(x = minute, y = shots)) +
+geom_point(color = "steelblue2")+
+theme_minimal()+
+labs(y = "total number of shots")+
+geom_path(color = "steelblue1")+
+annotate("rect", xmin=c(0, 24), xmax=c(12, 36), ymin=0,  ymax=Inf, fill="grey 70", alpha=0.2)+
+geom_vline(xintercept = 48, size = 0.2)+
+scale_x_continuous(breaks = seq(from = 0, to = 48, by = 12))+
+ggtitle("Total number of shots(by minute occurence")+
+facet_wrap(.~name)
+ggplot(data = all, aes(x = minute, y = shots)) +
+geom_point(color = "steelblue2")+
+theme_minimal()+
+labs(y = "total number of shots")+
+geom_path(color = "steelblue1")+
+annotate("rect", xmin=c(0, 24), xmax=c(12, 36), ymin=0,  ymax=Inf, fill="grey 70", alpha=0.2)+
+geom_vline(xintercept = 48, size = 0.2)+
+scale_x_continuous(breaks = seq(from = 0, to = 48, by = 12))+
+ggtitle("Total number of shots(by minute occurence")+
+facet_grid(~name)
+ggplot(data = all, aes(x = minute, y = shots)) +
+geom_point(color = "steelblue2")+
+theme_minimal()+
+labs(y = "total number of shots")+
+geom_path(color = "steelblue1")+
+annotate("rect", xmin=c(0, 24), xmax=c(12, 36), ymin=0,  ymax=Inf, fill="grey 70", alpha=0.2)+
+geom_vline(xintercept = 48, size = 0.2)+
+scale_x_continuous(breaks = seq(from = 0, to = 48, by = 12))+
+ggtitle("Total number of shots(by minute occurence")+
+facet_wrap(~name)
+ggplot(data = all, aes(x = minute, y = shots)) +
+geom_point(color = "steelblue2")+
+theme_minimal()+
+labs(y = "total number of shots")+
+geom_path(color = "steelblue1")+
+annotate("rect", xmin=c(0, 24), xmax=c(12, 36), ymin=0,  ymax=Inf, fill="grey 70", alpha=0.2)+
+geom_vline(xintercept = 48, size = 0.2)+
+scale_x_continuous(breaks = seq(from = 1, to = 48, by = 12))+
+ggtitle("Total number of shots(by minute occurence")+
+facet_wrap(~name)
+ggplot(data = all, aes(x = minute, y = shots)) +
+geom_point(color = "steelblue2")+
+theme_minimal()+
+labs(y = "total number of shots")+
+geom_path(color = "steelblue1")+
+annotate("rect", xmin=c(0, 24), xmax=c(12, 36), ymin=0,  ymax=Inf, fill="grey 70", alpha=0.2)+
+geom_vline(xintercept = 48, size = 0.2)+
+scale_x_continuous(breaks = seq(from = 0, to = 48, by = 12))+
+ggtitle("Total number of shots(by minute occurence")+
+facet_wrap(~name)
+ggplot(data = all, aes(x = minute, y = shots)) +
+geom_point(color = "steelblue2")+
+theme_minimal()+
+labs(y = "total number of shots")+
+geom_path(color = "steelblue1")+
+annotate("rect", xmin=c(0, 24), xmax=c(12, 36), ymin=0,  ymax=Inf, fill="grey 70", alpha=0.2)+
+geom_vline(xintercept = 48, size = 0.2)+
+scale_x_continuous(limits = c(1, 48), breaks = seq(from = 0, to = 48, by = 12))+
+ggtitle("Total number of shots(by minute occurence")+
+facet_wrap(~name)
+ggplot(data = all, aes(x = minute, y = shots)) +
+geom_point(color = "steelblue2")+
+theme_minimal()+
+labs(y = "total number of shots")+
+geom_path(color = "steelblue1")+
+annotate("rect", xmin=c(0, 24), xmax=c(12, 36), ymin=0,  ymax=Inf, fill="grey 70", alpha=0.2)+
+geom_vline(xintercept = 48, size = 0.2)+
+scale_x_continuous(limits = c(1, 48), breaks = c(1, 12, 36, 48))+
+ggtitle("Total number of shots(by minute occurence")+
+facet_wrap(~name)
+ggplot(data = all, aes(x = minute, y = shots)) +
+geom_point(color = "steelblue2")+
+theme_minimal()+
+labs(y = "total number of shots")+
+geom_path(color = "steelblue1")+
+annotate("rect", xmin=c(0, 24), xmax=c(12, 36), ymin=0,  ymax=Inf, fill="grey 70", alpha=0.2)+
+geom_vline(xintercept = 48, size = 0.2)+
+scale_x_continuous(limits = c(1, 48), breaks = c(1, 12, 24, 36, 48))+
+ggtitle("Total number of shots(by minute occurence")+
+facet_wrap(~name)
+ggplot(data = all, aes(x = minute, y = shots)) +
+geom_point(color = "steelblue2")+
+theme_minimal()+
+labs(y = "total number of shots")+
+geom_path(color = "steelblue1")+
+annotate("rect", xmin=c(0, 24), xmax=c(12, 36), ymin=0,  ymax=Inf, fill="grey 70", alpha=0.2)+
+geom_vline(xintercept = 48, size = 0.2)+
+scale_x_continuous(limits = c(1, 48), breaks = c(1, 12, 24, 36, 48))+
+ggtitle("Total number of shots(by minute occurence")+
+facet_wrap(~name)
+library(knitr)
+library(dplyr)
+library(ggplot2)
+library(knitr)
+library(dplyr)
+library(ggplot2)
+library(knitr)
+library(dplyr)
+library(ggplot2)
+library(knitr)
+library(dplyr)
+library(ggplot2)

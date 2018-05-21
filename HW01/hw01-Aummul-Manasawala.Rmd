@@ -1,0 +1,418 @@
+---
+title: "hw01-Aummul-Manasawala"
+author: "Aummul Baneen Manasawala"
+date: "February 19, 2018"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(corrplot)
+library(knitr)
+library(dplyr)
+library(ggplot2)
+library(GGally)
+library(FactoMineR)
+
+```
+#2 Data Import
+
+### Importing data with read.csv()
+```{r}
+ url <- 'https://archive.ics.uci.edu/ml/machine-learning-databases/autos/imports-85.data'
+
+column_names <- c(
+                  "symboling",
+                  "normalized_losses",
+                   "make",
+                  "fuel_type",
+                  "aspiration",
+                  "num_of_doors",
+                  "body_style",
+                  "drive_wheels",
+                  "engine_location",
+                  "wheel_base",
+                  "length",
+                  "width",
+                  "height",
+                  "curb_weight",
+                  "engine_type",
+                  "num_of_cylinders",
+                  "engine_size",
+                  "fuel_system",
+                  "bore",
+                  "stroke",
+                  "compression_ratio",
+                  "horsepower",
+                  "peak_rpm",
+                  "city_mpg",
+                  "highway_mpg",
+                  "price"
+                  )
+
+
+
+
+
+column_type <- c(
+  "double",
+  "double",
+  "character",
+  "character",
+  "character",
+  "character",
+  "character",
+  "character",
+  "character", 
+  "double", 
+  "double",
+  "double",
+  "double",
+  "integer",
+  "character",
+  "character",
+  "integer",
+  "character",
+  "double",
+  "double",
+  "double",
+  "integer",
+  "integer",
+  "integer",
+  "integer",
+  "integer"
+)
+
+automobile <- read.csv(url, col.names = column_names, colClasses  = column_type, stringsAsFactors = FALSE, skipNul = FALSE, na.string = "?", header = FALSE) 
+```
+
+### Display of structure
+
+```{r}
+str(automobile)
+```
+### Importing data with read_csv()
+
+```{r}
+library(readr)
+library(curl)
+automobile2 <- read_csv(url, col_names = column_names, col_types = 'ddcccccccddddiccicdddiiiii', na = "?")
+```
+
+### Display of structure
+
+```{r}
+str(automobile2)
+```
+# 3) Technical Questions about Importing data
+
+#### a. If you don't provide a vector of coulumn names, what happens to the column names of the imported data when you simply invoke read.csv("imports-85.data")?
+
+Default assumes column names in the first row. So if we don't provide a vector of column names, then the first row of the data (in "imports-85.data", all the specifications of the first vehicle) will be treated as column names.
+
+#### b. If you don't provide a vector of column names, what happens to the column names of the imported data when you invoke read.csv ("imports-85.data", header = FALSE)?
+
+Specifying header = FALSE, means our data has no column names. Therefore, R doesnot use the first row of the data as column names as in default setting. After secifying header =FALSE, R generates its own coulumn names for reference like V1, V2 and like.
+
+#### c. When using the reading table functions, if  you don't specify how missing values are codified, what happens to the data type of those columns that contain "?", e.g. price or num_of_doors?
+
+If we don't specify how the missing values are codified, the data type of the columns that contain "?" become 'factor' with "?" as one of it's levels even if all other enteries are numeric or character. For example in this case even though all the values in the column of price is integer, the default data type that R assigns to that column is factor with "?" as one of its factor inorder to accomodate the missing value character which it assumes to be a entry rather than missing value. Similarly, in case of num_of_doors, although all the values are character "four", "two", but because of symbol ?, the data type assigned to num_of_doors is factor with "?" as one of its levels along with "two" and "four".
+
+
+#### d. Say you import imorts-85.data in two different ways. In the first option you import the data without specifying the data type of each column. In second, you do specify the data types. You may wonder whether both options return a data frameof the same memory size. YOu can actually use the funstion object.size() that provides th eestimate of the memory that is being used to store R object. Why is the data frameimported in the second option bigger(in terms of bytes) than the data frame imported in teh first option?
+
+Less memory (43344 bytes) is used in the first case when the data type of columns are specified as one of the six atomic vector classes compared to the second option (60400 bytes) when the data type is not specified. This is particularly so when reading a column that takes many distinct numeric values, as storing each distinct value as a character string can take up to 14 times as much memory as storing it as an integer.
+
+
+#### e. Say the object dat is the data frame produced when importing imports-85.data.What happens to the data values if you convert dat as an R matrix?
+
+
+If we convert "dat" to matrix, since matrix is an atomic structure, i.e. all elements of matrix are of same tye, therefore the entire data gets converted to character type. Since storing characters take more memory than storing numbers, the matrix occupies much larger memory (88496 bytes) than the data frame in which only columns are atomic structures.
+
+
+# Practice Base Plotting
+
+#### Histogram of Price with colored bars
+
+```{r}
+hist(automobile$price, col = "red", breaks = 10, main = "Histogram of Automobile Price", xlab = "Price (in USD)" )
+```
+
+#### Description:
+
+Most of the automobiles are in the price range $5000 to $10,000. On average, we can see a decreasing pattern with little noise. 
+
+
+#### Boxplot of horsepower in horizontal orientation
+```{r}
+
+boxplot(automobile$horsepower, horizontal = TRUE, range = 1.5, col ="yellow" , border = "purple" )
+```
+#### Description of the Boxplot
+
+Boxplot gives the five important numbers namely, the minimum value (48 HP), maximum value (288 HP), first quartile (70 HP), median or the second quartile (95 HP) and the third quarile (116 HP). The first and the third quartile are connect with a box which are followed by whiskers which are of length 1.5 interquartile range from the median. Whiskers are followed by the outliers that lie between the whiskers and the minimum or maximum value. In this plot we dont see any outliers in the lower end but certainly few in the upper range. It shows that the data is skewed to left and not symmetric. The right tail is ligher than the left tail. And thus we can anticipate that the mean would be higher than the median.
+
+#### Barplot of frequencies of body_style, arranged in decreasing order
+
+```{r}
+counts <- sort(table(automobile$body_style), decreasing = TRUE)
+barplot(counts, beside = TRUE, width = 2, main = "Frequency distribution of Body Styles", xlab = "Body Style of the Vehicle", ylab = "Number of Vehicles", col = "blue", cex.names = 0.65)
+```
+
+#### Decription of the Bar Plot
+
+Using the barplot we find that most vehicles are sedan(96), followed by hatchback(70). Wagons (25) lag hatchback by quite a big margin and hardtop(8) and convertibles(5) are rare.
+
+ 
+#### Stars() plot of vehicles with turbo aspiration, using only variables wheel-base, length, width, height, and price.
+
+```{r}
+stars(automobile[automobile$aspiration=="turbo", c("wheel_base", "length", "width", "height", "price" )], full = TRUE, scale = TRUE, key.labels =c("wheel_base", "length", "width", "height", "price" ) )
+```
+#### Description for stars() plot
+
+We see that vehicle of the row number 24 28, 80, 81 and 120 are comparatively quite small in all the aspects of wheel base size, length, width, height and price. There seem to be a positive correlation between all these attributes. Visually we can also make out that vehicle of row 71 is the largest amongst all (in size as well as price).
+
+
+#Summaries
+
+#### a. What is the mean orice of fuel_type gas cars? And what is the mean price of fuel_type diesel cars? (removing missing values)
+
+```{r}
+gas_price <- automobile[automobile$fuel_type=="gas", "price"]
+mean_price_gas <- mean(gas_price, na.rm = TRUE, trim = 0)
+mean_price_gas
+
+diesel_price <- automobile[automobile$fuel_type=="diesel", "price"]
+
+mean_diesel_price <- mean(diesel_price, na.rm = TRUE, trim = 0)
+mean_diesel_price
+```
+
+The mean price of fuel_type gas cars is $12916.41 while the mean price of fuel_type diesel cars is $15838.15.
+
+
+#### b. What is the make of the car with twelve num_of_cylinders?
+
+```{r}
+make_of_twelve_cyl <- automobile[automobile$num_of_cylinders=="twelve", "make"]
+ make_of_twelve_cyl
+```
+
+Jaguar is the make of the car with twelve num_of_cyclinders.
+
+
+#### c. What is the make that has the most diesel cars?
+
+```{r}
+
+diesel_make <- automobile[automobile$fuel_type=="diesel", "make"]
+t_diesel_make <- table(diesel_make)
+t_diesel_make
+df_diesel_make <- as.data.frame(t_diesel_make)
+df_diesel_make
+max_diesel_make <- df_diesel_make[df_diesel_make$Freq==max(df_diesel_make$Freq), ]
+max_diesel_make
+
+```
+
+The make that has the most diesel cars is Peugot that produces 5 types of diesel cars.
+
+
+#### d. What is the price of the car with the largest amount of the horsepower?
+
+```{r}
+price_maxHP <- automobile[automobile$horsepower==max(automobile$horsepower, na.rm = TRUE), c("price", "horsepower")]
+price_maxHP
+second_maxHP <- head(sort(automobile$horsepower, decreasing = TRUE), 3)
+second_maxHP
+automobile[automobile$horsepower==second_maxHP, c("price", "horsepower") ]
+```
+
+So the price of the car with the maximum horsepower (288 HP) is missing from the data we have. Therefore it s showing NA. So, we go ahead with finding the price of car with the second maximum and the third maximum horsepower (262 HP and 207 HP) and find the price to be $36000 and $37028 respectively.
+
+#### e. What is the bottom 10th percentile of city_mpg?
+
+```{r}
+quantile(automobile$city_mpg, probs = 0.1)
+```
+
+The bottom 10th percentile of the city_mpg is 17 miles per gallon.
+
+#### f. What is the top 10th percentile of highway_mpg?
+```{r}
+quantile(automobile$highway_mpg, probs = 0.9)
+```
+The top 10th percentile of the highway_mpg is 38 miles per gallon.
+
+#### g. What is the median price of those cars in the bottom 10th percetile of city_mpg?
+```{r}
+
+sub10_city_mpg <- automobile[automobile$city_mpg <= quantile(automobile$city_mpg, 0.10), c("city_mpg", "price")]
+sub10_city_mpg
+
+med_price <- median(sub10_city_mpg$price, na.rm = TRUE)
+med_price
+```
+
+The median price of those cars in the bottom 10th percentile of city_mpg is $32250.
+
+# Technical Questions about Data Frames
+
+#### a. What happens when you use the dollar $ operator on a data frame, attempting to use the name of a column that does not exist? For example dat$xyz where there is no column named xyz.
+
+Ans a. Since there is no column that exists with the name we are calling in the dataframe, the R returns NULL that is returns nothing.
+
+
+#### b. Which of the following commands fails to return the vector mpg which is a column in the built-in data frame mtcars:
+
+Ans b 1. mtcars$mpg : Returns    
+      2. mtcars[ , 1] : Returns    
+      3. mtcars[[1]] : Returns    
+      4. mtcars[ ,mpg] : Fails, because the column name mpg must be enclosed in quotation mark.    
+      5. mtcars[["mpg"]] : Returns    
+      6. mtcars$"mpg" : Returns    
+      7. mtcars[ ,"mpg"] : Returns    
+      
+      
+#### c. Based on your answer in part b, what is the reason that makes such command to fail?
+
+Ans c. The reason it fails is that the argument expects the index of thecolumn if there are no quotation marks and i expects the name of the column only if if it in the quotation mark which makes it a string rather than num.
+
+
+#### d. Can you include an R list as a "column" of a dataframe> YES or NO and Why?
+
+Ans d. Yes, we can include R list as a "column" of a dataframe because data frames are also a type of list. If the number of elements of the list is less than the number of rows in the column of the data frame, then the elements of the list recycles to make the number of elements equal to the number of the rows of the data frame. We must keep in mind that the columns of a data frame are homogeneous or atomic while the elements of the list are not.
+
+
+#### e. What happens when you apply as.list() to a data frame?
+
+Ans e. When we apply as.list() to a data frame, the data frame gets converted to a list with each column of the data frame as each element of the list.
+
+#### f. Consider the command: abc <- as.list(mtcars). What functions can you use to convert the object abc into a data frame.
+
+
+Ans To convert the object abc to data frame, following functions can be used:
+1. as.data.frame(mtcars)
+
+
+2. data.frame(mtcars)  
+
+
+3. enframe(mtcars) (from package tibble) etc.
+
+
+
+# 7. Correlations of quantitative variables
+```{r}
+qdat <- na.omit(automobile[ , -c(1, 2, 3, 4, 5, 6, 7, 8 , 9, 15, 16, 18)])
+qdatc <- round(cor(qdat), 2)
+corrplot(qdatc, method = "circle")
+corrplot(qdatc, method = "pie")
+corrplot(qdatc, method = "color")
+corrplot(qdatc, method = "number")
+corrplot.mixed(qdatc, lower = "number", upper = "shade", lower.col = "black", number.cex= 0.5, tl.pos = "lt", diag = "u" )
+#Reordering the correlation matrix
+corrplot(qdatc, type = "upper", order = "hclust")
+```
+Based on the matrix of correlation "qdat" between the quantitative variables and the correlogram, we make the following observations:
+
+1. All the diagonal elements have the correlation 1 (i.e. the correlation of a element with itself is 1)
+
+2. The correlogram matrix is symmetric along the diagonal.
+
+3. In order to distinguish between the positive and negative correlations, two distinct colors are used.
+
+4. Length & width, wheel base & length, curb_weight & engine size are all positively correlated with high intensity which is what we expect.
+
+5. Compression ratio is not very heavily correlated to any variables.
+
+6. city miles per gallon and highway miles per gallon are highly correlated positively to each other.
+
+7. However, city_mpg and highway_mpg are both negatively correlated to all the attributes that increase weight of the car like wheel base, length, width, height, engine size, bore which justifies the principals of mechanics.
+
+
+# 8. Principal Components Analysis
+
+## 8.1) Run PCA
+
+#### Use prcomp() to perform a principal components analysis on qdat; use the argument scale. =TRUE to carry out PCA on standardized data
+
+```{r}
+#PCA with prcomp()
+pca_prcomp <- prcomp(qdat, scale. = T)
+
+#Inside the prcomp
+names(pca_prcomp)
+
+#Eigen Values
+eigenvalues <- pca_prcomp$sdev^2
+eigenvalues
+
+# loadings or weights
+loadings <- pca_prcomp$rotation
+round(loadings, 3)
+
+#scores or principal components
+scores <- pca_prcomp$x
+round(head(scores, 5), 3)
+```
+#### Examine the eigenvalues and determine the proportion of variation that is "captured" by the first three components.
+
+```{r}
+#Eigen Values
+eigenvalues <- pca_prcomp$sdev^2
+
+eigs <- eigenvalues
+eigs_perc <- 100*eigs/sum(eigs)
+
+eigs_cum <- cumsum(eigs_perc)
+
+eigs_df <- data.frame(
+  eigenvalue = eigs,
+  percentage = eigs_perc,
+  "cumulative percentage" = eigs_cum
+)
+
+print(round(eigs_df, 4), print.gap = 2)
+
+```
+
+The Eigen values capture the projected inertia (i.e.) variation on each extracted dimension. In our case, where the data frame "qdat" is standardised, the sum of eigenvalues equals the number of variables. Thus we compute the proportion of variation captured by each PC by dividing the eigenvalues by the total inertia.
+
+
+We observe that the first three components capture the maximum proportion of variation. The proportion of variation of the first three components is approximately 53.8%, 16.28% and 8.69% respectively. Together, the first three components alone capture about 79% proportion of variation.
+
+
+## 8.2) PCA plot of vehicles, and PCA plot of variables
+
+
+#### Use the first two components to graph a scatterplot of the vehicles.
+
+```{r}
+plot(pca_prcomp$x, type = "n", las = 1)
+abline(h=0, v=0)
+points(pca_prcomp$x[, 1], pca_prcomp$x[ ,2], pch = 19, col = "#88888877")
+title(main = "PC Plot of the vehicles")
+```
+
+#### Use the first two loadings (i.e. eigen vectors) to graph the variables
+
+```{r}
+loadings <- pca_prcomp$rotation
+loadings
+
+#Optional graph made
+```
+#### Optionally, you can call biplot() of the "prcomp" object to get a simultaneous plot of both the vehicles and the variables.
+
+```{r}
+biplot(pca_prcomp, scale = 0, cex=0.7)
+```
+
+In the biplot, the top and the right axes shows loadings of variables (i.e. each characteristic/attribute of the vehicle) while the left and the bottom axes represent scale for the score of each vehicle that is normalised principal component score.
+
+
+In this case, we observe that variables length, width, curb_weight are quite close together is space. So if a vehicle has high length, it is likely to have a high width / curb_weight as well. Similarly, we see that city_mpg and highway_mpg are close together in space. So a vehicle with high city mileage is likely to have a high highway mileage as well.. Similarly there is high correlation between engine size and the price of the vehicle. We can also infer from the plots that the horsepower and the mileage (both city and highway) are negatively correlated which means that if a vehicle has high horsepower, it probably has low city_mpg and low highway_mpg. For the plot of vehicle with respect to first two components, we see that most vehicles are clustered in the middle region so as to mantain the aspect ratio of the vehicle. But, we can also find some outliers such as vehiclke number 74 and 75 with a high wheel base but a relative low length. On the contrary, we find other extreme vehicles such as 19 and 31 that have low wheel base and good length relatively. Vehicles 115 and 111 also are a bit of outlier for having low length and while vehicles like 112 stand out for higher component of PC2.
+

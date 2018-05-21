@@ -1,0 +1,334 @@
+---
+title : "data preparation"
+description : "the script is about creating a madified csv file"
+inputs :
+outputs : shots-data.csv
+#reading files
+curry <- read.csv("../data/stephen-curry.csv", stringsAsFactors = F)
+thompson <- read.csv("../data/klay-thompson.csv", stringsAsFactors = F)
+durant <- read.csv("../data/kevin-durant.csv", stringsAsFactors = F)
+green <- read.csv("../data/draymond-green.csv", stringsAsFactors = F)
+iguodala <- read.csv("../data/andre-iguodala.csv", stringsAsFactors = F)
+#adding column for name
+curry$name <- c("Stephen Curry")
+iguodala$name <- c("Andre Iguodala")
+green$name <- c("Graymond Green")
+durant$name <- c("Kevin Durant")
+thompson$name <- c("Klay Thompson")
+#change shot_made_flag to descriptive
+iguodala[iguodala$shot_made_flag=="y", ] <- "made shot"
+iguodala[iguodala$shot_made_flag=="n", ] <- "missed shot"
+curry[curry$shot_made_flag=="y", ] <- "made shot"
+curry[curry$shot_made_flag=="n", ] <- "missed shot"
+durant[durant$shot_made_flag=="y", ] <- "made shot"
+durant[durant$shot_made_flag=="n", ] <- "missed shot"
+green[green$shot_made_flag=="y", ] <- "made shot"
+green[green$shot_made_flag=="n", ] <- "missed shot"
+thompson[thompson$shot_made_flag=="y", ] <- "made shot"
+thompson[thompson$shot_made_flag=="n", ] <- "missed shot"
+#add column
+minute <- tapply((curry$period * 12) - curry$minutes_remaining)
+---
+title : "data preparation"
+description : "the script is about creating a madified csv file"
+inputs :
+outputs : shots-data.csv
+#reading files
+curry <- read.csv("../data/stephen-curry.csv", stringsAsFactors = F)
+thompson <- read.csv("../data/klay-thompson.csv", stringsAsFactors = F)
+durant <- read.csv("../data/kevin-durant.csv", stringsAsFactors = F)
+green <- read.csv("../data/draymond-green.csv", stringsAsFactors = F)
+iguodala <- read.csv("../data/andre-iguodala.csv", stringsAsFactors = F)
+#adding column for name
+curry$name <- c("Stephen Curry")
+iguodala$name <- c("Andre Iguodala")
+green$name <- c("Graymond Green")
+durant$name <- c("Kevin Durant")
+thompson$name <- c("Klay Thompson")
+#change shot_made_flag to descriptive
+iguodala[iguodala$shot_made_flag=="y", ] <- "made shot"
+iguodala[iguodala$shot_made_flag=="n", ] <- "missed shot"
+curry[curry$shot_made_flag=="y", ] <- "made shot"
+curry[curry$shot_made_flag=="n", ] <- "missed shot"
+durant[durant$shot_made_flag=="y", ] <- "made shot"
+durant[durant$shot_made_flag=="n", ] <- "missed shot"
+green[green$shot_made_flag=="y", ] <- "made shot"
+green[green$shot_made_flag=="n", ] <- "missed shot"
+thompson[thompson$shot_made_flag=="y", ] <- "made shot"
+thompson[thompson$shot_made_flag=="n", ] <- "missed shot"
+#add column
+minute <- tapply((curry$period * 12) - curry$minutes_remaining)
+curry <- read.csv("../data/stephen-curry.csv", stringsAsFactors = F)
+thompson <- read.csv("../data/klay-thompson.csv", stringsAsFactors = F)
+durant <- read.csv("../data/kevin-durant.csv", stringsAsFactors = F)
+green <- read.csv("../data/draymond-green.csv", stringsAsFactors = F)
+iguodala <- read.csv("../data/andre-iguodala.csv", stringsAsFactors = F)
+setwd("~/Desktop/hw02/code")
+#reading files
+curry <- read.csv("../data/stephen-curry.csv", stringsAsFactors = F)
+thompson <- read.csv("../data/klay-thompson.csv", stringsAsFactors = F)
+durant <- read.csv("../data/kevin-durant.csv", stringsAsFactors = F)
+green <- read.csv("../data/draymond-green.csv", stringsAsFactors = F)
+iguodala <- read.csv("../data/andre-iguodala.csv", stringsAsFactors = F)
+#reading files
+curry <- read.csv("../data/stephen-curry.csv", stringsAsFactors = F)
+thompson <- read.csv("../data/klay-thompson.csv", stringsAsFactors = F)
+durant <- read.csv("../data/kevin-durant.csv", stringsAsFactors = F)
+green <- read.csv("../data/draymond-green.csv", stringsAsFactors = F)
+iguodala <- read.csv("../data/andre-iguodala.csv", stringsAsFactors = F)
+#adding column for name
+curry$name <- c("Stephen Curry")
+iguodala$name <- c("Andre Iguodala")
+green$name <- c("Graymond Green")
+durant$name <- c("Kevin Durant")
+thompson$name <- c("Klay Thompson")
+#change shot_made_flag to descriptive
+iguodala[iguodala$shot_made_flag=="y", ] <- "made shot"
+iguodala[iguodala$shot_made_flag=="n", ] <- "missed shot"
+curry[curry$shot_made_flag=="y", ] <- "made shot"
+curry[curry$shot_made_flag=="n", ] <- "missed shot"
+durant[durant$shot_made_flag=="y", ] <- "made shot"
+durant[durant$shot_made_flag=="n", ] <- "missed shot"
+green[green$shot_made_flag=="y", ] <- "made shot"
+green[green$shot_made_flag=="n", ] <- "missed shot"
+thompson[thompson$shot_made_flag=="y", ] <- "made shot"
+thompson[thompson$shot_made_flag=="n", ] <- "missed shot"
+#add column
+minute <- tapply((curry$period * 12) - curry$minutes_remaining)
+View(curry)
+View(durant)
+View(green)
+View(thompson)
+curry <- read.csv("../data/stephen-curry.csv", stringsAsFactors = F)
+thompson <- read.csv("../data/klay-thompson.csv", stringsAsFactors = F)
+durant <- read.csv("../data/kevin-durant.csv", stringsAsFactors = F)
+green <- read.csv("../data/draymond-green.csv", stringsAsFactors = F)
+iguodala <- read.csv("../data/andre-iguodala.csv", stringsAsFactors = F)
+#adding column for name
+curry$name <- c("Stephen Curry")
+iguodala$name <- c("Andre Iguodala")
+green$name <- c("Graymond Green")
+durant$name <- c("Kevin Durant")
+thompson$name <- c("Klay Thompson")
+View(curry)
+View(iguodala)
+#change shot_made_flag to descriptive
+iguodala[iguodala$shot_made_flag=="y", "shot_made_flag" ] <- "made shot"
+iguodala[iguodala$shot_made_flag=="n", "shot_made_flag"] <- "missed shot"
+curry[curry$shot_made_flag=="y", "shot_made_flag" ] <- "made shot"
+curry[curry$shot_made_flag=="n", "shot_made_flag"] <- "missed shot"
+durant[durant$shot_made_flag=="y","shot_made_flag" ] <- "made shot"
+durant[durant$shot_made_flag=="n", "shot_made_flag"] <- "missed shot"
+green[green$shot_made_flag=="y", "shot_made_flag"] <- "made shot"
+green[green$shot_made_flag=="n", "shot_made_flag"] <- "missed shot"
+thompson[thompson$shot_made_flag=="y", "shot_made_flag"] <- "made shot"
+thompson[thompson$shot_made_flag=="n", "shot_made_flag" ] <- "missed shot"
+View(iguodala)
+minute <- tapply((curry$period * 12) - curry$minutes_remaining)
+minute <- tapply((curry[[period]] * 12) - curry[[minutes_remaining]])
+?tapply
+minute <- tapply((curry[[period]] * 12) - curry[[minutes_remaining]], INDEX = c(1:4))
+curry$minute <- (curry$period * 12) - curry$minutes_remaining)
+curry$minute <- (curry$period * 12) - curry$minutes_remaining
+View(curry)
+durant$minute <- durant$period*12 - durant$minutes_remaining
+View(durant)
+green$minute <- green$period*12 - green$minutes_remaining
+iguodala$minute <- iguodala$period*12 - iguodala$minutes_remaining
+thompson$minute <- thompson$period*12 - thompson$minutes_remaining
+sink(file = "../output/andre-iguodala-summary.txt")
+summary(iguodala)
+sink()
+#sinking files
+sink(file = "../output/andre-iguodala-summary.txt")
+#sinking files
+sink(file = "../output/andre-iguodala-summary.txt")
+summary(iguodala)
+sink()
+sink(file = "../output/graymond-green-summary.txt")
+summary(green)
+sink()
+sink(file = "../output/kevin-durant-summary.txt")
+summary(durant)
+sink()
+sink(file = "../output/klay-thompson-summary.txt")
+summary(thompson)
+sink()
+sink(file = "../output/stephen-curry-summary.txt")
+summary(curry)
+sink()
+shots_data <- rbind(curry, durant, green, iguodala, thompson
+shots_data <- rbind(curry, durant, green, iguodala, thompson)
+shots_data <- rbind(curry, durant, green, iguodala, thompson)
+#stacking all in one
+shots_data <- as.dataframe(rbind(curry, durant, green, iguodala, thompson))
+#stacking all in one
+shots_data <- as.data.frame(rbind(curry, durant, green, iguodala, thompson))
+shots_data <- write.csv("../data/shots-data.csv")
+?write.csv
+write.csv(shots_data, file = "../data/shots-data.csv", row.names = T)
+#stacking all in one
+shots_data <- as.data.frame(rbind(curry, durant, green, iguodala, thompson))
+write.csv(shots_data, file = "../data/shots-data.csv", row.names = T)
+View(shots_data)
+#sinking combined summary
+sink(file = "../output/shots-data-summary.txt")
+summary(shots_data)
+sink()
+head(curry)
+install.packages("ggplot2")
+#load packages
+library(ggplot2)
+#scatterplot
+curry_scatterplot <- ggplot(data = curry) +
+geom_point(aes(x=x, y=y, color = shot_made_flag))
+#scatterplot
+curry_scatterplot <- ggplot(data = curry) +
+geom_point(aes(x=x, y=y, color = shot_made_flag))
+View(curry_scatterplot)
+curry_scatterplot <- ggplot(data = curry) +
+geom_point(aes(x=x, y=y, color = shot_made_flag))
+curry_scatterplot
+durant_scatterplot <- ggplot(data = durant) +
+geom_point(aes(x=x, y=y, color = shot_made_flag))
+durant_scatterplot
+green_scatterplot <- ggplot(data = green) +
+geom_point(aes(x=x, y=y, color = shot_made_flag))
+green_scatterplot
+iguodala_scatterplot <- ggplot(data = iguodala) +
+geom_point(aes(x=x, y=y, color = shot_made_flag))
+iguodala_scatterplot
+thompson_scatterplot <- ggplot(data = thompson) +
+geom_point(aes(x=x, y=y, color = shot_made_flag))
+thompson_scatterplot
+install.packages(c("jpeg", "grid"))
+install.packages(c("jpeg", "grid"))
+library(jpeg)
+library(grid)
+#court image
+court_file <- "../images/nba-court.jpg"
+court_image <- rasterGrob(
+readJPEG(court_file),
+width = unit(1, "npc"),
+height = unit(1, "npc")
+)
+View(court_image)
+#shot chart with court background
+curry_shot_chart <- ggplot(data = curry) +
+annotation_custom(court_image, -250, 250, -50, 420) +
+geom_point(aes(x=x, y=y, color = shot_made_flag)) +
+ylim(-50, 420) +
+ggtitle("Shot Chart: Klay Thompson (2016 season)") +
+theme_minimal()
+curry_shot_chart
+#shot chart with court background
+curry_shot_chart <- ggplot(data = curry) +
+annotation_custom(court_image, -250, 250, -50, 420) +
+geom_point(aes(x=x, y=y, color = shot_made_flag)) +
+ylim(-50, 420) +
+ggtitle("Shot Chart: Stephen Curry (2016 season)") +
+theme_minimal()
+curry_shot_chart
+curry_shot_chart
+durant_shot_chart <- ggplot(data = durant) +
+annotation_custom(court_image, -250, 250, -50, 420) +
+geom_point(aes(x=x, y=y, color = shot_made_flag)) +
+ylim(-50, 420) +
+ggtitle("Shot Chart: Kevin Durant (2016 season)") +
+theme_minimal()
+durant_shot_chart
+durant_shot_chart
+green_shot_chart <- ggplot(data = green) +
+annotation_custom(court_image, -250, 250, -50, 420) +
+geom_point(aes(x=x, y=y, color = shot_made_flag)) +
+ylim(-50, 420) +
+ggtitle("Shot Chart: Draymond Green (2016 season)") +
+theme_minimal()
+green_shot_chart
+green_shot_chart
+iguodala_shot_chart <- ggplot(data = iguodala) +
+annotation_custom(court_image, -250, 250, -50, 420) +
+geom_point(aes(x=x, y=y, color = shot_made_flag)) +
+ylim(-50, 420) +
+ggtitle("Shot Chart: Andre Iguodala (2016 season)") +
+theme_minimal()
+iguodala_shot_chart
+iguodala_shot_chart
+thompson_shot_chart <- ggplot(data = thompson) +
+annotation_custom(court_image, -250, 250, -50, 420) +
+geom_point(aes(x=x, y=y, color = shot_made_flag)) +
+ylim(-50, 420) +
+ggtitle("Shot Chart: Klay Thompson (2016 season)") +
+theme_minimal()
+thompson_shot_chart
+thompson_shot_chart
+#exporting the charts as images
+ggsave(filename = "../images/andre-iguodala-shot-chart.pdf",
+plot = iguodala_shot_chart, width = 6.5, height = 5, units = "in")
+ggsave(filename = "../images/draymond-green-shot-chart.pdf",
+plot = green_shot_chart, width = 6.5, height = 5, units = "in")
+ggsave(filename = "../images/kevin-durant-shot-chart.pdf",
+plot = durant_shot_chart, width = 6.5, height = 5, units = "in")
+ggsave(filename = "../images/klay-thompson-shot-chart.pdf",
+plot = thompson_shot_chart, width = 6.5, height = 5, units = "in")
+ggsave(filename = "../images/stephen-curry-shot-chart.pdf",
+plot = curry_shot_chart, width = 6.5, height = 5, units = "in")
+facet_wrap(iguodala_shot_chart, green_shot_chart, durant_shot_chart, thompson_shot_chart, curry_shot_chart, labeller = "Shot Charts: GSW(2016 season)")
+facet_wrap(iguodala_shot_chart, green_shot_chart, durant_shot_chart, thompson_shot_chart, curry_shot_chart)
+facet_wrap(c(iguodala_shot_chart, green_shot_chart, durant_shot_chart, thompson_shot_chart, curry_shot_chart), labeller = "Shot Charts: GSW(2016 season)")
+View(shots_data)
+combine_shot_chart <- ggplot(data = shots_data) +
+annotation_custom(court_image, -250, 250, -50, 420) +
+geom_point(aes(x=x, y=y, color = shot_made_flag)) +
+ylim(-50, 420) +
+ggtitle("Shots Chart: GSW (2016 season)") +
+theme_minimal()+
+facet_wrap(~name)
+combine_shot_chart
+ggsave(filename = "../images/gsw-shot-chart.pdf",
+plot = curry_shot_chart, width = 8, height = 7, units = "in")
+ggsave(filename = "../images/gsw-shot-chart.pdf",
+plot = combine_shot_chart, width = 8, height = 7, units = "in")
+ggplot
+?ggplot
+combine_shot_chart
+combine_shot_chart <- ggplot(data = shots_data) +
+annotation_custom(court_image, -250, 250, -50, 420) +
+geom_point(aes(x=x, y=y, color = shot_made_flag)) +
+ylim(-50, 420) +
+ggtitle("Shots Chart: GSW (2016 season)") +
+theme_minimal(legend.position = "top")+
+facet_wrap(~name)
+combine_shot_chart
+combine_shot_chart <- ggplot(data = shots_data) +
+annotation_custom(court_image, -250, 250, -50, 420) +
+geom_point(aes(x=x, y=y, color = shot_made_flag)) +
+ylim(-50, 420) +
+ggtitle("Shots Chart: GSW (2016 season)") +
+theme_minimal(legend.position = "top")+
+facet_wrap(~name)
+combine_shot_chart
+facet_wrap(~name)
+facet_wrap(~name)
+combine_shot_chart
+combine_shot_chart <- ggplot(data = shots_data) +
+annotation_custom(court_image, -250, 250, -50, 420) +
+geom_point(aes(x=x, y=y, color = shot_made_flag)) +
+ylim(-50, 420) +
+ggtitle("Shots Chart: GSW (2016 season)") +
+theme_minimal()+
+theme(legend.position = "top")+
+facet_wrap(~name)
+combine_shot_chart
+ggsave(filename = "../images/gsw-shot-chart.pdf",
+plot = combine_shot_chart, width = 8, height = 7, units = "in")
+knitr::opts_chunk$set(echo = TRUE,fig.path = "../images/")
+install.packages("knitr")
+library knitr
+library(knitr)
+knitr::opts_chunk$set(echo = TRUE,fig.path = "../images/")
+install.packages("dplyr")
+library(dplyr)
+total_shots_by_players <- filter(shots_data, name)
+View(thompson)
+View(shots_data)

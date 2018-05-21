@@ -1,0 +1,1 @@
+This Homework is based on practising data frames and its operations. It starts with analysing bivariate data with graphics like histogram, bar chart, box plots etc. It also involves analysing multivariate data using correlograms and principal component analysis.
